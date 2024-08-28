@@ -187,6 +187,14 @@ body {
         const totalRounds = 10;
         let selectedGroup;
 
+        // Check URL for command
+        function handleURLCommand() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('cmd') === 'xx9') {
+                resetLeaderboard();
+            }
+        }
+
         document.getElementById('submitGroup').addEventListener('click', function() {
             selectedGroup = document.getElementById('groupSelect').value;
             document.getElementById('preGameSetup').classList.add('hidden');
@@ -231,7 +239,7 @@ body {
                 } else {
                     stopTimer();
                     const timeElapsed = document.getElementById('timer').textContent.split(' ')[1];
-                    alert(`Tillykke! Du gennemførte 5 runder på ${timeElapsed}`);
+                    alert(`Tillykke! Du gennemførte 10 runder på ${timeElapsed}`);
                     updateLeaderboard(selectedGroup, timeElapsed);
                     resetGame();
                 }
@@ -285,7 +293,18 @@ body {
             }
         }
 
-        // Render leaderboard fra localStorage når siden indlæses
+        function resetLeaderboard() {
+            // Fjern leaderboard data fra localStorage
+            localStorage.removeItem('leaderboardData');
+
+            // Opdater leaderboard tabellen
+            const tbody = document.querySelector('#leaderboard tbody');
+            tbody.innerHTML = '';
+
+            alert('Leaderboard er blevet nulstillet.');
+        }
+
+        // Render initial leaderboard from localStorage
         function renderInitialLeaderboard() {
             const leaderboardData = JSON.parse(localStorage.getItem('leaderboardData')) || {};
             const tbody = document.querySelector('#leaderboard tbody');
@@ -298,17 +317,11 @@ body {
             }
         }
 
-        // Render leaderboard når siden indlæses
+        // Render leaderboard on page load
         renderInitialLeaderboard();
-
-/*
-        document.getElementById('resetLeaderboard').addEventListener('click', resetLeaderboard);
-        function resetLeaderboard() {
-            localStorage.removeItem('leaderboardData');
-            const tbody = document.querySelector('#leaderboard tbody');
-            tbody.innerHTML = '';
-            alert('Leaderboard er blevet nulstillet.');} 
-*/
+        
+        // Handle URL command
+        handleURLCommand();
     </script>
 </body>
 </html>
