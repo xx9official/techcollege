@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRUPPE 5's CHALLENGE</title>
+    <style>
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-image: url('https://images.ctfassets.net/92msd2z72mb1/7KEy2vtPTmmZPzCm8qmkhp/d736b7157f70836776993dff06626894/Year-in-Review-Blog.gif');
+    background-size: contain;
+    background-position: center;
+}
+
+
+        .container {
+            text-align: center;
+        }
+
+        #preGameSetup {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        #preGameSetup h2 {
+            margin: 0 0 15px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        #groupSelect {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        #submitGroup {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        #submitGroup:hover {
+            background-color: #0056b3;
+        }
+
+        #startButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        #startButton:hover {
+            background-color: #0056b3;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(10, 40px);
+            grid-gap: 5px;
+            margin-top: 20px;
+        }
+
+        .number {
+            background-color: #ddd;
+            padding: 15px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .number:hover {
+            background-color: #ccc;
+        }
+
+        #timer {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+
+        #round {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        #leaderboard {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        #leaderboard table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        #leaderboard th, #leaderboard td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        #leaderboard th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Find 9-tallet 10 gange</h1>
+        <div id="preGameSetup">
+            <h2>Vælg din gruppe</h2>
+            <select id="groupSelect">
+                <option value="1">Gruppe 1</option>
+                <option value="2">Gruppe 2</option>
+                <option value="3">Gruppe 3</option>
+                <option value="4">Gruppe 4</option>
+                <option value="5">Gruppe 5</option>
+                <option value="6">Gruppe 6</option>
+                <option value="7">Gruppe 7</option>
+                <option value="8">Gruppe 8</option>
+                <option value="9">Gruppe 9</option>
+                <option value="10">Gruppe 10</option>
+                <option value="11">Gruppe 11</option>
+            </select>
+            <button id="submitGroup">Vælg</button>
+            <button id="startButton" class="hidden">Start</button>
+            <!-- <button id="resetLeaderboard">Nulstil Leaderboard</button> -->
+        </div>
+        <button id="startButton" class="hidden">Start</button>
+        <div id="gameBoard" class="game-board hidden">
+            <!-- Grid med numre indsættes her -->
+        </div>
+        <p id="timer" class="hidden">Tid: 0.00s</p>
+        <p id="round" class="hidden">Runde: 1/5</p>
+        <div id="leaderboard">
+            <h2>Leaderboard</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Gruppe</th>
+                        <th>Tid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Leaderboard data indsættes her -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let startTime;
+        let interval;
+        let currentRound = 1;
+        const totalRounds = 10;
+        let selectedGroup;
+
+        document.getElementById('submitGroup').addEventListener('click', function() {
+            selectedGroup = document.getElementById('groupSelect').value;
+            document.getElementById('preGameSetup').classList.add('hidden');
+            document.getElementById('startButton').classList.remove('hidden');
+        });
+
+        document.getElementById('startButton').addEventListener('click', startGame);
+
+        function startGame() {
+            currentRound = 1;
+            document.getElementById('startButton').classList.add('hidden');
+            document.getElementById('gameBoard').classList.remove('hidden');
+            document.getElementById('timer').classList.remove('hidden');
+            document.getElementById('round').classList.remove('hidden');
+            updateRoundText();
+            generateGrid();
+            startTimer();
+        }
+
+        function generateGrid() {
+            const gameBoard = document.getElementById('gameBoard');
+            gameBoard.innerHTML = ''; // Ryd eventuelle eksisterende numre
+
+            const gridSize = 100; // 10x10 grid
+            const nineIndex = Math.floor(Math.random() * gridSize);
+
+            for (let i = 0; i < gridSize; i++) {
+                const numberDiv = document.createElement('div');
+                numberDiv.classList.add('number');
+                numberDiv.textContent = i === nineIndex ? '9' : '8';
+                numberDiv.addEventListener('click', () => checkNumber(i, nineIndex));
+                gameBoard.appendChild(numberDiv);
+            }
+        }
+
+        function checkNumber(clickedIndex, nineIndex) {
+            if (clickedIndex === nineIndex) {
+                if (currentRound < totalRounds) {
+                    currentRound++;
+                    updateRoundText();
+                    generateGrid(); // Gå videre til næste runde
+                } else {
+                    stopTimer();
+                    const timeElapsed = document.getElementById('timer').textContent.split(' ')[1];
+                    alert(`Tillykke! Du gennemførte 5 runder på ${timeElapsed}`);
+                    updateLeaderboard(selectedGroup, timeElapsed);
+                    resetGame();
+                }
+            }
+        }
+
+        function updateRoundText() {
+            document.getElementById('round').textContent = `Runde: ${currentRound}/${totalRounds}`;
+        }
+
+        function startTimer() {
+            startTime = Date.now();
+            interval = setInterval(updateTimer, 10);
+        }
+
+        function updateTimer() {
+            const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
+            document.getElementById('timer').textContent = `Tid: ${elapsedTime}s`;
+        }
+
+        function stopTimer() {
+            clearInterval(interval);
+        }
+
+        function resetGame() {
+            document.getElementById('preGameSetup').classList.remove('hidden');
+            document.getElementById('startButton').classList.add('hidden');
+            document.getElementById('gameBoard').classList.add('hidden');
+            document.getElementById('timer').classList.add('hidden');
+            document.getElementById('round').classList.add('hidden');
+            document.getElementById('timer').textContent = 'Tid: 0.00s';
+            currentRound = 1;
+        }
+
+        function updateLeaderboard(group, time) {
+            let leaderboardData = JSON.parse(localStorage.getItem('leaderboardData')) || {};
+
+            leaderboardData[group] = time;
+
+            // Gem opdateret leaderboard data til localStorage
+            localStorage.setItem('leaderboardData', JSON.stringify(leaderboardData));
+
+            // Opdater leaderboard tabellen
+            const tbody = document.querySelector('#leaderboard tbody');
+            tbody.innerHTML = '';
+
+            for (const [groupKey, timeValue] of Object.entries(leaderboardData)) {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `<td>${groupKey}</td><td>${timeValue}</td>`;
+                tbody.appendChild(newRow);
+            }
+        }
+
+        // Render leaderboard fra localStorage når siden indlæses
+        function renderInitialLeaderboard() {
+            const leaderboardData = JSON.parse(localStorage.getItem('leaderboardData')) || {};
+            const tbody = document.querySelector('#leaderboard tbody');
+            tbody.innerHTML = '';
+
+            for (const [groupKey, timeValue] of Object.entries(leaderboardData)) {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `<td>${groupKey}</td><td>${timeValue}</td>`;
+                tbody.appendChild(newRow);
+            }
+        }
+
+        // Render leaderboard når siden indlæses
+        renderInitialLeaderboard();
+
+/*
+        document.getElementById('resetLeaderboard').addEventListener('click', resetLeaderboard);
+        function resetLeaderboard() {
+            localStorage.removeItem('leaderboardData');
+            const tbody = document.querySelector('#leaderboard tbody');
+            tbody.innerHTML = '';
+            alert('Leaderboard er blevet nulstillet.');} 
+*/
+    </script>
+</body>
+</html>
