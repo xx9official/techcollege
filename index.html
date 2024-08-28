@@ -17,7 +17,19 @@ body {
     background-position: center;
 }
 
-
+.rotated-text {
+    position: fixed;
+    top: 100px;
+    left: 20px;
+    font-size: 16px;
+    color: #333;
+    transform: rotate(-45deg);
+    transform-origin: left bottom;
+    background-color: rgba(255, 255, 255, 0.8); /* Optional: for better readability */
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Optional: for a subtle shadow effect */
+}
         .container {
             text-align: center;
         }
@@ -158,6 +170,7 @@ body {
             <button id="startButton" class="hidden">Start</button>
             <!-- <button id="resetLeaderboard">Nulstil Leaderboard</button> -->
         </div>
+        <div class="rotated-text">Du vinder ingenting!</div>
         <button id="startButton" class="hidden">Start</button>
         <div id="gameBoard" class="game-board hidden">
             <!-- Grid med numre indsættes her -->
