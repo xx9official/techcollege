@@ -3,35 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GRUPPE 5's CHALLENGE</title>
+    <title>Find 9-spillet</title>
     <style>
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-image: url('https://images.ctfassets.net/92msd2z72mb1/7KEy2vtPTmmZPzCm8qmkhp/d736b7157f70836776993dff06626894/Year-in-Review-Blog.gif');
-    background-size: contain;
-    background-position: center;
-}
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('https://i.makeagif.com/media/3-22-2016/gFvhLf.gif');
+            background-size: cover;
+            background-position: center;
+        }
 
-.rotated-text {
-    position: fixed;
-    top: 100px;
-    left: 20px;
-    font-size: 16px;
-    color: #333;
-    transform: rotate(-45deg);
-    transform-origin: left bottom;
-    background-color: rgba(255, 255, 255, 0.8); /* Optional: for better readability */
-    padding: 5px;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Optional: for a subtle shadow effect */
-}
         .container {
             text-align: center;
+            background-color: rgba(255, 255, 255, 0.8); /* semi-transparent background for readability */
+            border-radius: 10px;
+            padding: 20px;
+            display: inline-block;
         }
 
         #preGameSetup {
@@ -80,13 +71,29 @@ body {
             cursor: pointer;
             border: none;
             border-radius: 5px;
-            background-color: #007bff;
+            background-color: #28a745;
             color: white;
             transition: background-color 0.3s;
         }
 
         #startButton:hover {
-            background-color: #0056b3;
+            background-color: #218838;
+        }
+
+        #resetLeaderboard {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #dc3545;
+            color: white;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+
+        #resetLeaderboard:hover {
+            background-color: #c82333;
         }
 
         .hidden {
@@ -150,7 +157,7 @@ body {
 </head>
 <body>
     <div class="container">
-        <h1>Find 9-tallet 10 gange</h1>
+        <h1>Find 9-spillet</h1>
         <div id="preGameSetup">
             <h2>Vælg din gruppe</h2>
             <select id="groupSelect">
@@ -166,11 +173,8 @@ body {
                 <option value="10">Gruppe 10</option>
                 <option value="11">Gruppe 11</option>
             </select>
-            <button id="submitGroup">Vælg</button>
-            <button id="startButton" class="hidden">Start</button>
-            <!-- <button id="resetLeaderboard">Nulstil Leaderboard</button> -->
+            <button id="submitGroup">Start spil</button>
         </div>
-        <div class="rotated-text">Du vinder ingenting!</div>
         <button id="startButton" class="hidden">Start</button>
         <div id="gameBoard" class="game-board hidden">
             <!-- Grid med numre indsættes her -->
@@ -190,6 +194,7 @@ body {
                     <!-- Leaderboard data indsættes her -->
                 </tbody>
             </table>
+            <button id="resetLeaderboard">Nulstil Leaderboard</button>
         </div>
     </div>
 
@@ -197,7 +202,7 @@ body {
         let startTime;
         let interval;
         let currentRound = 1;
-        const totalRounds = 10;
+        const totalRounds = 5;
         let selectedGroup;
 
         // Check URL for command
@@ -252,7 +257,7 @@ body {
                 } else {
                     stopTimer();
                     const timeElapsed = document.getElementById('timer').textContent.split(' ')[1];
-                    alert(`Tillykke! Du gennemførte 10 runder på ${timeElapsed}`);
+                    alert(`Tillykke! Du gennemførte 5 runder på ${timeElapsed}`);
                     updateLeaderboard(selectedGroup, timeElapsed);
                     resetGame();
                 }
@@ -332,7 +337,7 @@ body {
 
         // Render leaderboard on page load
         renderInitialLeaderboard();
-        
+
         // Handle URL command
         handleURLCommand();
     </script>
